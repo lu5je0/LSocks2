@@ -1,19 +1,16 @@
 package lsocks2;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.socksx.v5.Socks5CommandRequestDecoder;
-import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
-import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
+import io.netty.handler.codec.socksx.v5.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lsocks2.config.ProxyServerConfig;
+import lsocks2.handler.Socks5CommandRequestHandler;
+import lsocks2.handler.Socks5InitialRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +56,8 @@ public class ProxyServer {
                             p.addLast(Socks5ServerEncoder.DEFAULT);
                             p.addLast(new Socks5InitialRequestDecoder());
                             p.addLast(new Socks5CommandRequestDecoder());
+                            p.addLast(new Socks5InitialRequestHandler());
+                            p.addLast(new Socks5CommandRequestHandler());
                         }
                     });
 
