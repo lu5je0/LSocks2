@@ -1,0 +1,11 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="utf-8">
+            <pattern>%red(%d{HH:mm:ss.SSS}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger:%line) - %cyan(%msg%n)</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
