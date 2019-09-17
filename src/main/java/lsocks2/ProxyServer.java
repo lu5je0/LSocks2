@@ -56,6 +56,7 @@ public class ProxyServer {
                             p.addLast(Socks5ServerEncoder.DEFAULT);
                             p.addLast(new Socks5InitialRequestDecoder());
                             p.addLast(new Socks5CommandRequestDecoder());
+
                             p.addLast(new Socks5InitialRequestHandler());
                             p.addLast(new Socks5CommandRequestHandler());
                         }
