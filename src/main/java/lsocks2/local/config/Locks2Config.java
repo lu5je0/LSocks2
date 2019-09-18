@@ -1,11 +1,11 @@
-package lsocks2.config;
+package lsocks2.local.config;
 
-public class ProxyServerConfig {
+public class Locks2Config {
     private int port;
 
     private boolean logging;
 
-    private ProxyServerConfig() {
+    private Locks2Config() {
     }
 
     public int getPort() {
@@ -16,8 +16,8 @@ public class ProxyServerConfig {
         this.port = port;
     }
 
-    public static ProxyServerConfig defaultProxyServerConfig() {
-        ProxyServerConfig config = new ProxyServerConfig();
+    public static Locks2Config defaultConfig() {
+        Locks2Config config = new Locks2Config();
         config.setPort(1082);
         config.setLogging(true);
 

@@ -1,4 +1,4 @@
-package lsocks2.handler;
+package lsocks2.local.handler;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

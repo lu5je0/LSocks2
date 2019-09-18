@@ -1,4 +1,4 @@
-package lsocks2.handler;
+package lsocks2.local.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -13,7 +13,7 @@ public class Socks5InitialRequestHandler extends SimpleChannelInboundHandler<Def
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5InitialRequest msg) {
-        logger.info("初始化Socks5:{}", msg);
+        logger.debug("初始化Socks5:{}", msg);
         if (msg.authMethods().stream().noneMatch(socks5AuthMethod ->
                 socks5AuthMethod.equals(Socks5AuthMethod.NO_AUTH))) {
             logger.error("暂时不支持AUTH认证！");

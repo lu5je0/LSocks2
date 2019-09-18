@@ -1,22 +1,26 @@
-package lsocks2;
+package lsocks2.local;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.socksx.v5.*;
+import io.netty.handler.codec.socksx.v5.Socks5CommandRequestDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.config.ProxyServerConfig;
-import lsocks2.handler.Client2RemoteHandler;
-import lsocks2.handler.Socks5CommandRequestHandler;
-import lsocks2.handler.Socks5InitialRequestHandler;
+import lsocks2.local.config.Locks2Config;
+import lsocks2.local.handler.Socks5CommandRequestHandler;
+import lsocks2.local.handler.Socks5InitialRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProxyServer {
-    private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
+public class LocalProxyServer {
+    private static final Logger logger = LoggerFactory.getLogger(LocalProxyServer.class);
 
     private int port;
 
@@ -28,9 +32,9 @@ public class ProxyServer {
 
     private boolean logging = true;
 
-    public void init(ProxyServerConfig config) {
+    public void init(Locks2Config config) {
         if (config == null) {
-            config = ProxyServerConfig.defaultProxyServerConfig();
+            config = Locks2Config.defaultConfig();
         }
         this.port = config.getPort();
         bootstrap = new ServerBootstrap();
@@ -81,8 +85,8 @@ public class ProxyServer {
     }
 
     public static void main(String[] args) {
-        ProxyServer proxyServer = new ProxyServer();
-        proxyServer.init();
-        proxyServer.start();
+        LocalProxyServer localProxyServer = new LocalProxyServer();
+        localProxyServer.init();
+        localProxyServer.start();
     }
 }

@@ -1,4 +1,4 @@
-package lsocks2.handler;
+package lsocks2.local.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -6,8 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.charset.StandardCharsets;
 
 public class Remote2ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static Logger logger = LoggerFactory.getLogger(Remote2ClientHandler.class);
