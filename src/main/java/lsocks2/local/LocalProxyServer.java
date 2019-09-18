@@ -13,7 +13,7 @@ import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.local.config.Locks2Config;
+import lsocks2.local.config.LocalConfig;
 import lsocks2.local.handler.Socks5CommandRequestHandler;
 import lsocks2.local.handler.Socks5InitialRequestHandler;
 import org.slf4j.Logger;
@@ -30,21 +30,23 @@ public class LocalProxyServer {
 
     private EventLoopGroup workerGroup;
 
-    private boolean logging = true;
+    private boolean enableNettyLogging = true;
 
-    public void init(Locks2Config config) {
+    public void loadConfig(LocalConfig config) {
         if (config == null) {
-            config = Locks2Config.defaultConfig();
+            logger.warn("未指定LocalConfig，将使用默认配置");
+            config = LocalConfig.defaultConfig();
         }
         this.port = config.getPort();
+        this.enableNettyLogging = config.isEnableNettyLogging();
         bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup(10);
         logger.info("ProxyServer initialized");
     }
 
-    public void init() {
-        init(null);
+    public void loadConfig() {
+        loadConfig(null);
     }
 
     public void start() {
@@ -55,7 +57,7 @@ public class LocalProxyServer {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-                            if (logging) {
+                            if (enableNettyLogging) {
                                 p.addLast(new LoggingHandler(LogLevel.DEBUG));
                             }
                             p.addLast(Socks5ServerEncoder.DEFAULT);
@@ -86,7 +88,7 @@ public class LocalProxyServer {
 
     public static void main(String[] args) {
         LocalProxyServer localProxyServer = new LocalProxyServer();
-        localProxyServer.init();
+        localProxyServer.loadConfig();
         localProxyServer.start();
     }
 }
