@@ -19,6 +19,5 @@ public class Socks5InitialRequestHandler extends SimpleChannelInboundHandler<Def
             logger.error("暂时不支持AUTH认证！");
         }
         ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
-        ctx.fireChannelRead(msg);
     }
 }

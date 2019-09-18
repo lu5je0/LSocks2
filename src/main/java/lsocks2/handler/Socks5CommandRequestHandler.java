@@ -16,6 +16,5 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
     protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5CommandRequest msg) {
         logger.info("客户端准备连接至:type:{} addr:{} port:{}", msg.dstAddrType(), msg.dstAddr(), msg.dstPort());
         ctx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, msg.dstAddrType()));
-        ctx.fireChannelRead(msg);
     }
 }
