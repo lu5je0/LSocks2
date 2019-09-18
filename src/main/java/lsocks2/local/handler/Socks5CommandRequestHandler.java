@@ -19,7 +19,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5CommandRequest msg) throws InterruptedException {
+    protected void channelRead0(ChannelHandlerContext parentCtx, DefaultSocks5CommandRequest msg) {
         logger.info("客户端准备连接至{}:{}", msg.dstAddr(), msg.dstPort());
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(eventLoopGroup)
@@ -28,7 +28,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new Remote2ClientHandler(ctx.channel()));
+                        pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
                     }
                 });
         ChannelFuture connectFuture = bootstrap.connect(msg.dstAddr(), msg.dstPort());
@@ -37,8 +37,8 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
         // 最后再将Socks5的CommandResponse返回给客户端
         connectFuture.addListener(future -> {
             if (future.isSuccess()) {
-                ctx.pipeline().addLast(new Client2RemoteHandler(connectFuture.channel()));
-                ctx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, msg.dstAddrType()));
+                parentCtx.pipeline().addLast(new Client2RemoteHandler(connectFuture.channel()));
+                parentCtx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, msg.dstAddrType()));
             }
         });
     }

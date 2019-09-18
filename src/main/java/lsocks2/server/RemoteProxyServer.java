@@ -9,6 +9,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lsocks2.local.LocalProxyServer;
 import lsocks2.server.config.ServerConfig;
+import lsocks2.server.handler.LSocksInitialRequestDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,7 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new LSocksInitialRequestDecoder());
                     }
                 });
     }
