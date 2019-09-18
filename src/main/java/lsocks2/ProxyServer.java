@@ -9,6 +9,7 @@ import io.netty.handler.codec.socksx.v5.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lsocks2.config.ProxyServerConfig;
+import lsocks2.handler.Client2RemoteHandler;
 import lsocks2.handler.Socks5CommandRequestHandler;
 import lsocks2.handler.Socks5InitialRequestHandler;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class ProxyServer {
         this.port = config.getPort();
         bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup(10);
         logger.info("ProxyServer initialized");
     }
 
@@ -51,14 +52,14 @@ public class ProxyServer {
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
                             if (logging) {
-                                p.addLast(new LoggingHandler(LogLevel.INFO));
+                                p.addLast(new LoggingHandler(LogLevel.DEBUG));
                             }
                             p.addLast(Socks5ServerEncoder.DEFAULT);
                             p.addLast(new Socks5InitialRequestDecoder());
                             p.addLast(new Socks5CommandRequestDecoder());
 
                             p.addLast(new Socks5InitialRequestHandler());
-                            p.addLast(new Socks5CommandRequestHandler());
+                            p.addLast(new Socks5CommandRequestHandler(workerGroup));
                         }
                     });
 
