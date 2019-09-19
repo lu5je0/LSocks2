@@ -1,11 +1,9 @@
 package lsocks2.common.encoder;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import io.netty.util.CharsetUtil;
 import lsocks2.protocol.LSocksMessage;
 
 public class LSocksMessageEncoder extends ChannelOutboundHandlerAdapter {
