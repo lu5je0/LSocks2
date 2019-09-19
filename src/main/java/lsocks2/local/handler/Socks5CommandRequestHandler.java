@@ -6,7 +6,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import lsocks2.common.handler.LSocks5InitialResponseHandler;
 import lsocks2.common.encoder.LSocksMessageEncoder;
+import lsocks2.common.handler.Client2RemoteHandler;
+import lsocks2.common.handler.Remote2ClientHandler;
 import lsocks2.protocol.LSocksInitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new LSocks5InitialResponseHandler());
                         pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
                         pipeline.addLast(new LSocksMessageEncoder());
                     }

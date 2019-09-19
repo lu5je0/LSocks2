@@ -1,11 +1,11 @@
-package lsocks2.server.handler;
+package lsocks2.common.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import io.netty.util.CharsetUtil;
 import lsocks2.protocol.LSocksInitRequest;
-import lsocks2.server.handler.LSocksInitialRequestDecoder.State;
+import lsocks2.common.encoder.LSocksInitialRequestDecoder.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lsocks2.common.encoder.LSocksMessageEncoder;
 import lsocks2.local.LocalProxyServer;
 import lsocks2.server.config.ServerConfig;
-import lsocks2.server.handler.LSocksInitialRequestDecoder;
+import lsocks2.common.encoder.LSocksInitialRequestDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
