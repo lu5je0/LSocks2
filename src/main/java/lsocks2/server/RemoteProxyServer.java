@@ -56,6 +56,7 @@ public class RemoteProxyServer {
                         pipeline.addLast(new LSocksInitialRequestDecoder());
                     }
                 });
+        serverBootstrap.bind(20443);
     }
 
     public static void main(String[] args) {

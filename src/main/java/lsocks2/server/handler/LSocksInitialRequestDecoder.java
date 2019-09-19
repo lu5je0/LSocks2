@@ -4,13 +4,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import io.netty.util.CharsetUtil;
+import lsocks2.protocol.LSocksInitRequest;
 import lsocks2.server.handler.LSocksInitialRequestDecoder.State;
-import lsocks2.protocol.LSocksInitResponse;
-import lsocks2.protocol.LSocksStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class LSocksInitialRequestDecoder extends ReplayingDecoder<State> {
+    private static Logger logger = LoggerFactory.getLogger(LSocksInitialRequestDecoder.class);
+
     enum State {
         INIT,
         SUCCESS,
@@ -29,8 +32,9 @@ public class LSocksInitialRequestDecoder extends ReplayingDecoder<State> {
                 final String dstAddr = in.toString(in.readerIndex(), dstLength, CharsetUtil.US_ASCII);
                 in.skipBytes(dstLength);
                 final int port = in.readUnsignedShort();
-                out.add(new LSocksInitResponse(LSocksStatus.SUCCESS));
+                out.add(new LSocksInitRequest(dstAddr, port));
                 checkpoint(State.SUCCESS);
+                logger.info("收到LSocksInitRequest [{}:{}]", dstAddr, port);
             }
             case SUCCESS: {
                 int readableBytes = actualReadableBytes();

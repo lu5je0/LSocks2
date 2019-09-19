@@ -1,14 +1,18 @@
 package lsocks2.protocol;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.util.CharsetUtil;
+
 public class LSocksInitRequest implements LSocksMessage {
     private final int dstLength;
 
     private final String dstAddr;
 
-    private final String dstPort;
+    private final int dstPort;
 
-    public LSocksInitRequest(int dstLength, String dstAddr, String dstPort) {
-        this.dstLength = dstLength;
+    public LSocksInitRequest(String dstAddr, int dstPort) {
+        this.dstLength = dstAddr.length();
         this.dstAddr = dstAddr;
         this.dstPort = dstPort;
     }
@@ -21,7 +25,15 @@ public class LSocksInitRequest implements LSocksMessage {
         return dstAddr;
     }
 
-    public String getDstPort() {
+    public int getDstPort() {
         return dstPort;
+    }
+
+    public ByteBuf getAsByteBuf() {
+        ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeByte(((byte) dstLength));
+        byteBuf.writeBytes(dstAddr.getBytes(CharsetUtil.US_ASCII));
+        byteBuf.writeShort(dstPort);
+        return byteBuf;
     }
 }
