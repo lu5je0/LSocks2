@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lsocks2.common.encoder.LSocksMessageEncoder;
 import lsocks2.local.LocalProxyServer;
 import lsocks2.server.config.ServerConfig;
 import lsocks2.server.handler.LSocksInitialRequestDecoder;
@@ -54,6 +55,7 @@ public class RemoteProxyServer {
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new LSocksInitialRequestDecoder());
+                        pipeline.addLast(new LSocksMessageEncoder());
                     }
                 });
         serverBootstrap.bind(20443);

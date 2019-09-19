@@ -9,6 +9,10 @@ public class LSocksStatus {
     
     private final String name;
 
+    public byte getByteValue() {
+        return byteValue;
+    }
+
     public static LSocksStatus valueOf(byte b) {
         switch (b) {
             case 0x00:

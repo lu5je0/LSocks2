@@ -6,6 +6,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import lsocks2.common.encoder.LSocksMessageEncoder;
 import lsocks2.protocol.LSocksInitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
+                        pipeline.addLast(new LSocksMessageEncoder());
                     }
                 });
         ChannelFuture connectFuture = bootstrap.connect("127.0.0.1", 20443);
@@ -40,7 +42,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
             if (future.isSuccess()) {
                 // 首先发送LocksInitRequest
                 logger.info("发送LSocksInitRequest");
-                connectFuture.channel().writeAndFlush(new LSocksInitRequest(msg.dstAddr(), msg.dstPort()).getAsByteBuf());
+                connectFuture.channel().writeAndFlush(new LSocksInitRequest(msg.dstAddr(), msg.dstPort()));
                 parentCtx.pipeline().addLast(new Client2RemoteHandler(connectFuture.channel()));
                 parentCtx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, msg.dstAddrType()));
             }
