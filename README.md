@@ -1,2 +1,2 @@
 # LSosks2
-一个使用Netty开发的Socks5代理
+一个基于Netty开发的Socks5代理
