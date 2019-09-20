@@ -37,6 +37,7 @@ public class LSocksInitialRequestDecoder extends ReplayingDecoder<State> {
                 logger.info("收到LSocksInitRequest [{}:{}]", dstAddr, port);
             }
             case SUCCESS: {
+                logger.info("收到客户端数据");
                 int readableBytes = actualReadableBytes();
                 if (readableBytes > 0) {
                     out.add(in.readRetainedSlice(readableBytes));

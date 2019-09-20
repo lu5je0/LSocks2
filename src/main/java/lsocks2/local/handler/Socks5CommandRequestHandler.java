@@ -6,6 +6,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import io.netty.handler.logging.LoggingHandler;
 import lsocks2.common.handler.LSocks5InitialResponseHandler;
 import lsocks2.common.encoder.LSocksMessageEncoder;
 import lsocks2.common.handler.Client2RemoteHandler;
@@ -33,22 +34,19 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new LSocks5InitialResponseHandler());
+                        pipeline.addLast(new LoggingHandler());
+                        pipeline.addLast(new LSocks5InitialResponseHandler(parentCtx));
                         pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
                         pipeline.addLast(new LSocksMessageEncoder());
                     }
                 });
         ChannelFuture connectFuture = bootstrap.connect("127.0.0.1", 20443);
 
-        // 这里必须在LSocks2连接上远程服务器后才能将Client2RemoteHandler添加到pipeline中
-        // 最后再将Socks5的CommandResponse返回给客户端
+        // 连接上LSocksServer后，发送发送LSocksInitRequest
         connectFuture.addListener(future -> {
             if (future.isSuccess()) {
-                // 首先发送LocksInitRequest
                 logger.info("发送LSocksInitRequest");
                 connectFuture.channel().writeAndFlush(new LSocksInitRequest(msg.dstAddr(), msg.dstPort()));
-                parentCtx.pipeline().addLast(new Client2RemoteHandler(connectFuture.channel()));
-                parentCtx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, msg.dstAddrType()));
             }
         });
     }

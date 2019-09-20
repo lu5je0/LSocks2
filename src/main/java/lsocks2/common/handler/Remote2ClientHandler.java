@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,13 +19,12 @@ public class Remote2ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
-//        logger.info("远程服务器响应:{}", msg.toString(StandardCharsets.UTF_8));
-        clientChannel.writeAndFlush(msg);
+        logger.info("远程服务器响应:{}", msg.toString(CharsetUtil.UTF_8));
+        clientChannel.writeAndFlush(msg.retain());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-//        logger.info("远程服务器{}的连接已断开", ctx.channel().remoteAddress());
         clientChannel.close();
     }
 }

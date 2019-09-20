@@ -1,4 +1,4 @@
-package lsocks2.server;
+package lsocks2;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -7,10 +7,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import lsocks2.common.encoder.LSocksMessageEncoder;
-import lsocks2.local.LocalProxyServer;
 import lsocks2.server.config.ServerConfig;
 import lsocks2.common.encoder.LSocksInitialRequestDecoder;
+import lsocks2.server.handler.LSocksInitRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +56,12 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new LSocksInitialRequestDecoder());
+                        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+
                         pipeline.addLast(new LSocksMessageEncoder());
+
+                        pipeline.addLast(new LSocksInitialRequestDecoder());
+                        pipeline.addLast(new LSocksInitRequestHandler(workerGroup));
                     }
                 });
         serverBootstrap.bind(20443);

@@ -1,4 +1,4 @@
-package lsocks2.local;
+package lsocks2;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
