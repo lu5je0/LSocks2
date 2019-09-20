@@ -56,7 +56,9 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+                        if (enableNettyLogging) {
+                            pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+                        }
 
                         pipeline.addLast(new LSocksMessageEncoder());
 

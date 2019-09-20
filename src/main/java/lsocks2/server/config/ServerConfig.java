@@ -8,7 +8,7 @@ public class ServerConfig {
     public static ServerConfig defaultConfig() {
         ServerConfig serverConfig = new ServerConfig();
         serverConfig.port = 20443;
-        serverConfig.enableNettyLogging = true;
+        serverConfig.enableNettyLogging = false;
 
         return serverConfig;
     }

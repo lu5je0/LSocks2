@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class Client2RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
-        logger.info("转发客户端请求:\n{}", msg.toString(CharsetUtil.UTF_8));
+        logger.info("转发客户端请求:\n{}", msg);
         remoteChannel.writeAndFlush(msg.retain());
     }
 
