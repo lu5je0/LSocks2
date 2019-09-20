@@ -40,10 +40,8 @@ public class LSocks5InitialResponseHandler extends SimpleChannelInboundHandler<B
                 // 先给本地代理添加转发handler,再发送确认消息
                 parentCtx.pipeline().addLast(new Client2RemoteHandler(ctx.channel()));
                 // 发送给确认消息给Socks5客户端
-                // todo 这里Socks5AddressType.DOMAIN？？？
+                // todo 这里直接返回Socks5AddressType.DOMAIN，可能会出现问题
                 parentCtx.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, Socks5AddressType.DOMAIN));
-                // todo 注意，收到的LSocks5InitialResponse可能与远程响应的数据连在一块，这里break可能会丢失数据
-                break;
             }
             case SUCCESS: {
                 ctx.fireChannelRead(msg.retain());
