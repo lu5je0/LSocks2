@@ -1,9 +1,9 @@
 package lsocks2.config;
 
 public class LocalConfig {
-    private int localPort;
+    private Integer localPort;
 
-    private int serverPort;
+    private Integer serverPort;
 
     private String serverHost;
 
@@ -25,19 +25,19 @@ public class LocalConfig {
                 '}';
     }
 
-    public int getLocalPort() {
+    public Integer getLocalPort() {
         return localPort;
     }
 
-    public void setLocalPort(int localPort) {
+    public void setLocalPort(Integer localPort) {
         this.localPort = localPort;
     }
 
-    public int getServerPort() {
+    public Integer getServerPort() {
         return serverPort;
     }
 
-    public void setServerPort(int serverPort) {
+    public void setServerPort(Integer serverPort) {
         this.serverPort = serverPort;
     }
 

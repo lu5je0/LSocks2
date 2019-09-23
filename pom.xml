@@ -38,5 +38,10 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.61</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.crypto.tink</groupId>
+            <artifactId>tink</artifactId>
+            <version>1.2.2</version>
+        </dependency>
     </dependencies>
 </project>

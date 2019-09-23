@@ -2,7 +2,7 @@
   "localPort": 1082,
   "serverPort": 20443,
   "serverHost": "127.0.0.1",
-  "password": "",
-  "encryptMethod": "",
+  "password": "123456",
+  "encryptMethod": "CHACHA20_POLY1305",
   "enableNettyLogging": true
 }

@@ -30,10 +30,18 @@ public abstract class ConfigLoader {
 
         configInstance.setEnableNettyLogging(config.map(LocalConfig::isEnableNettyLogging).orElse(false));
         configInstance.setLocalPort(config.map(LocalConfig::getLocalPort).orElse(1080));
+
         configInstance.setServerHost(config.map(LocalConfig::getServerHost)
                 .orElseThrow(() -> new Exception("ServerHost未指定")));
-        configInstance.setServerHost(config.map(LocalConfig::getServerHost)
+
+        configInstance.setServerPort(config.map(LocalConfig::getServerPort)
                 .orElseThrow(() -> new Exception("ServerPort未指定")));
+
+        configInstance.setEncryptMethod(config.map(LocalConfig::getEncryptMethod)
+                .orElseThrow(() -> new Exception("EncryptMethod未指定")));
+
+        configInstance.setPassword(config.map(LocalConfig::getPassword)
+                .orElseThrow(() -> new Exception("password不能为空")));
     }
 
     private void loadServerConfig(ServerConfig serverConfig) throws Exception {
@@ -42,5 +50,14 @@ public abstract class ConfigLoader {
 
         configInstance.setPort(config.map(ServerConfig::getPort)
                 .orElseThrow(() -> new Exception("未指定port")));
+
+        configInstance.setEncryptMethod(config.map(ServerConfig::getEncryptMethod)
+                .orElseThrow(() -> new Exception("EncryptMethod未指定")));
+
+        configInstance.setPassword(config.map(ServerConfig::getPassword)
+                .orElseThrow(() -> new Exception("password不能为空")));
+
+        configInstance.setEnableNettyLogging(config.map(ServerConfig::getEnableNettyLogging)
+                .orElse(false));
     }
 }

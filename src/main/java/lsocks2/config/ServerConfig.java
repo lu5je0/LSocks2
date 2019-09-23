@@ -1,19 +1,19 @@
 package lsocks2.config;
 
 public class ServerConfig {
-    private int port;
+    private Integer port;
 
     private String password;
 
     private String encryptMethod;
 
-    private boolean enableNettyLogging;
+    private Boolean enableNettyLogging;
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
@@ -33,11 +33,11 @@ public class ServerConfig {
         this.encryptMethod = encryptMethod;
     }
 
-    public boolean isEnableNettyLogging() {
+    public Boolean getEnableNettyLogging() {
         return enableNettyLogging;
     }
 
-    public void setEnableNettyLogging(boolean enableNettyLogging) {
+    public void setEnableNettyLogging(Boolean enableNettyLogging) {
         this.enableNettyLogging = enableNettyLogging;
     }
 }

@@ -13,10 +13,16 @@ import lsocks2.config.ConfigLoader;
 import lsocks2.config.JsonConfigLoader;
 import lsocks2.encoder.LSocksMessageEncoder;
 import lsocks2.encoder.LSocksInitialRequestDecoder;
+import lsocks2.encrypt.CryptoFactory;
+import lsocks2.encrypt.ICrypto;
+import lsocks2.handler.DecryptHandler;
+import lsocks2.handler.EncryptHandler;
 import lsocks2.handler.server.LSocksInitRequestHandler;
 import lsocks2.config.ConfigHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.NoSuchAlgorithmException;
 
 public class RemoteProxyServer {
     private static final Logger logger = LoggerFactory.getLogger(LocalProxyServer.class);
@@ -30,7 +36,10 @@ public class RemoteProxyServer {
         workerGroup = new NioEventLoopGroup();
     }
 
-    public void start() {
+    public void start() throws NoSuchAlgorithmException {
+        ICrypto crypto = CryptoFactory.getCrypt(ConfigHolder.SERVER_CONFIG.getEncryptMethod(),
+                ConfigHolder.SERVER_CONFIG.getPassword());
+
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
@@ -38,9 +47,12 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        if (ConfigHolder.SERVER_CONFIG.isEnableNettyLogging()) {
+                        if (ConfigHolder.SERVER_CONFIG.getEnableNettyLogging()) {
                             pipeline.addLast(new LoggingHandler(LogLevel.INFO));
                         }
+
+                        // pipeline.addLast(new EncryptHandler(crypto));
+                        // pipeline.addLast(new DecryptHandler(crypto));
 
                         pipeline.addLast(new LSocksMessageEncoder());
 
@@ -48,10 +60,10 @@ public class RemoteProxyServer {
                         pipeline.addLast(new LSocksInitRequestHandler(workerGroup));
                     }
                 });
-        serverBootstrap.bind(20443);
+        serverBootstrap.bind(ConfigHolder.SERVER_CONFIG.getPort());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
         RemoteProxyServer server = new RemoteProxyServer();
 
         ConfigLoader configLoader = new JsonConfigLoader();
