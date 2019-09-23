@@ -1,13 +1,13 @@
-package lsocks2.local.handler;
+package lsocks2.handler.local;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.common.encoder.LSocksMessageEncoder;
-import lsocks2.common.handler.LSocks5InitialResponseHandler;
-import lsocks2.common.handler.Remote2ClientHandler;
+import lsocks2.encoder.LSocksMessageEncoder;
+import lsocks2.handler.LSocks5InitialResponseHandler;
+import lsocks2.handler.Remote2ClientHandler;
 import lsocks2.protocol.LSocksInitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

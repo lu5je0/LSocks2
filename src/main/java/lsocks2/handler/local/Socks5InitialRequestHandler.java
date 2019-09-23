@@ -1,4 +1,4 @@
-package lsocks2.local.handler;
+package lsocks2.handler.local;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

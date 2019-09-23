@@ -1,4 +1,4 @@
-package lsocks2.common.handler;
+package lsocks2.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

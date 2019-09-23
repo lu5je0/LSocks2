@@ -1,0 +1,8 @@
+{
+  "localPort": 1082,
+  "serverPort": 20443,
+  "serverHost": "127.0.0.1",
+  "password": "",
+  "encryptMethod": "",
+  "enableNettyLogging": true
+}

@@ -13,16 +13,16 @@ import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.local.config.LocalConfig;
-import lsocks2.local.handler.Socks5CommandRequestHandler;
-import lsocks2.local.handler.Socks5InitialRequestHandler;
+import lsocks2.config.ConfigLoader;
+import lsocks2.config.JsonConfigLoader;
+import lsocks2.handler.local.Socks5CommandRequestHandler;
+import lsocks2.handler.local.Socks5InitialRequestHandler;
+import lsocks2.config.ConfigHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LocalProxyServer {
     private static final Logger logger = LoggerFactory.getLogger(LocalProxyServer.class);
-
-    private int port;
 
     private ServerBootstrap bootstrap;
 
@@ -30,23 +30,11 @@ public class LocalProxyServer {
 
     private EventLoopGroup workerGroup;
 
-    private boolean enableNettyLogging = true;
-
-    public void loadConfig(LocalConfig config) {
-        if (config == null) {
-            logger.warn("未指定LocalConfig，将使用默认配置");
-            config = LocalConfig.defaultConfig();
-        }
-        this.port = config.getPort();
-        this.enableNettyLogging = config.isEnableNettyLogging();
+    public LocalProxyServer() {
         bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup(10);
         logger.info("ProxyServer initialized");
-    }
-
-    public void loadConfig() {
-        loadConfig(null);
     }
 
     public void start() {
@@ -57,7 +45,7 @@ public class LocalProxyServer {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-                            if (enableNettyLogging) {
+                            if (ConfigHolder.LOCAL_CONFIG.isEnableNettyLogging()) {
                                 p.addLast(new LoggingHandler(LogLevel.DEBUG));
                             }
                             p.addLast(Socks5ServerEncoder.DEFAULT);
@@ -69,10 +57,10 @@ public class LocalProxyServer {
                         }
                     });
 
-            ChannelFuture bindFuture = bootstrap.bind(port).sync();
+            ChannelFuture bindFuture = bootstrap.bind(ConfigHolder.LOCAL_CONFIG.getLocalPort()).sync();
             bindFuture.addListener(future -> {
                 if (future.isSuccess()) {
-                    logger.info("server bind on {}", port);
+                    logger.info("server bind on {}", ConfigHolder.LOCAL_CONFIG.getLocalPort());
                 }
             });
 
@@ -87,8 +75,16 @@ public class LocalProxyServer {
     }
 
     public static void main(String[] args) {
+        ConfigLoader configLoader = new JsonConfigLoader();
+
+        try {
+            configLoader.loadLocalConfig();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            System.exit(1);
+        }
+
         LocalProxyServer localProxyServer = new LocalProxyServer();
-        localProxyServer.loadConfig();
         localProxyServer.start();
     }
 }

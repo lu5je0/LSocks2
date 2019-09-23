@@ -1,4 +1,4 @@
-package lsocks2.common.encoder;
+package lsocks2.encoder;
 
 
 import io.netty.channel.ChannelHandlerContext;

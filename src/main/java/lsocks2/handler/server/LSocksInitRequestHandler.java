@@ -1,10 +1,10 @@
-package lsocks2.server.handler;
+package lsocks2.handler.server;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lsocks2.common.handler.Client2RemoteHandler;
-import lsocks2.common.handler.Remote2ClientHandler;
+import lsocks2.handler.Client2RemoteHandler;
+import lsocks2.handler.Remote2ClientHandler;
 import lsocks2.protocol.LSocksInitRequest;
 import lsocks2.protocol.LSocksInitResponse;
 import lsocks2.protocol.LSocksStatus;
