@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class JsonConfigLoader extends ConfigLoader {
+public class JsonConfigLoader extends AbstractConfigLoader {
     private static Logger logger = LoggerFactory.getLogger(JsonConfigLoader.class);
 
     private <T> T readFromFile(String filename, Class<T> type) throws IOException {
