@@ -2,12 +2,10 @@ package lsocks2.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 import lsocks2.encrypt.ICrypto;
 
-import java.util.List;
-
-public class EncryptHandler extends MessageToMessageEncoder<ByteBuf> {
+public class EncryptHandler extends MessageToByteEncoder<ByteBuf> {
     private static ICrypto crypto;
 
     public EncryptHandler(ICrypto crypto) {
@@ -15,10 +13,10 @@ public class EncryptHandler extends MessageToMessageEncoder<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        System.out.println("加密");
-        byte[] data = new byte[msg.readableBytes()];
-        msg.readBytes(data);
-        out.add(crypto.encrypt(data));
+    protected void encode(ChannelHandlerContext ctx, ByteBuf rawData, ByteBuf out) throws Exception {
+        byte[] data = new byte[rawData.readableBytes()];
+        rawData.readBytes(data);
+
+        out.writeBytes(crypto.encrypt(data));
     }
 }
