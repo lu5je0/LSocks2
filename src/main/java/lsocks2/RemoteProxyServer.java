@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.config.ConfigLoader;
+import lsocks2.config.AbstractConfigLoader;
 import lsocks2.config.JsonConfigLoader;
 import lsocks2.encoder.LSocksMessageEncoder;
 import lsocks2.encoder.LSocksInitialRequestDecoder;
@@ -36,7 +36,7 @@ public class RemoteProxyServer {
         workerGroup = new NioEventLoopGroup();
     }
 
-    public void start() throws NoSuchAlgorithmException {
+    public void start() throws Exception {
         ICrypto crypto = CryptoFactory.getCrypt(ConfigHolder.SERVER_CONFIG.getEncryptMethod(),
                 ConfigHolder.SERVER_CONFIG.getPassword());
 
@@ -47,12 +47,12 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new EncryptHandler(crypto));
+                        pipeline.addLast(new DecryptHandler(crypto));
+
                         if (ConfigHolder.SERVER_CONFIG.getEnableNettyLogging()) {
                             pipeline.addLast(new LoggingHandler(LogLevel.INFO));
                         }
-
-                        // pipeline.addLast(new EncryptHandler(crypto));
-                        // pipeline.addLast(new DecryptHandler(crypto));
 
                         pipeline.addLast(new LSocksMessageEncoder());
 
@@ -63,12 +63,12 @@ public class RemoteProxyServer {
         serverBootstrap.bind(ConfigHolder.SERVER_CONFIG.getPort());
     }
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws Exception {
         RemoteProxyServer server = new RemoteProxyServer();
 
-        ConfigLoader configLoader = new JsonConfigLoader();
+        AbstractConfigLoader abstractConfigLoader = new JsonConfigLoader();
         try {
-            configLoader.loadServerConfig();
+            abstractConfigLoader.loadServerConfig();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             System.exit(1);

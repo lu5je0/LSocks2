@@ -28,7 +28,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext parentCtx, DefaultSocks5CommandRequest msg) throws NoSuchAlgorithmException {
+    protected void channelRead0(ChannelHandlerContext parentCtx, DefaultSocks5CommandRequest msg) throws Exception {
         logger.info("客户端准备连接至{}:{}", msg.dstAddr(), msg.dstPort());
         ICrypto crypto = CryptoFactory.getCrypt(ConfigHolder.LOCAL_CONFIG.getEncryptMethod(),
                 ConfigHolder.LOCAL_CONFIG.getPassword());
@@ -39,16 +39,15 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        // pipeline.addLast(new EncryptHandler(crypto));
-                        // pipeline.addLast(new DecryptHandler(crypto));
+                        pipeline.addLast(new EncryptHandler(crypto));
+                        pipeline.addLast(new DecryptHandler(crypto));
 
                         pipeline.addLast(new LSocks5InitialResponseHandler(parentCtx));
                         pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
                         pipeline.addLast(new LSocksMessageEncoder());
                     }
                 });
-        ChannelFuture connectFuture = bootstrap.connect(ConfigHolder.LOCAL_CONFIG.getServerHost(),
-                20443);
+        ChannelFuture connectFuture = bootstrap.connect(ConfigHolder.LOCAL_CONFIG.getServerHost(), 20443);
 
         // 连接上LSocksServer后，发送发送LSocksInitRequest
         connectFuture.addListener(future -> {

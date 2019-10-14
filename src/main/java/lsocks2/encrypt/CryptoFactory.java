@@ -1,21 +1,21 @@
 package lsocks2.encrypt;
 
-import java.security.NoSuchAlgorithmException;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 public class CryptoFactory {
-    private static final HashMap<String, String> ciphers = new HashMap<>();
+    private static final HashMap<String, Class<? extends ICrypto>> ciphers = new HashMap<>();
 
     static {
-        ciphers.putAll(AeadCrypto.ciphers());
+        for (String s : AesCrypto.ciphers()) {
+            ciphers.put(s, AesCrypto.class);
+        }
+        ciphers.put("NONE", NoneCrypto.class);
     }
 
-    public static ICrypto getCrypt(String encryptMethod, String password) throws NoSuchAlgorithmException {
-        String cryptoName = ciphers.get(encryptMethod);
-        if ("lsocks2.encrypt.AeadCrypto".equals(cryptoName)) {
-            return new AeadCrypto(encryptMethod, password);
-        } else {
-            throw new NoSuchAlgorithmException();
-        }
+    public static ICrypto getCrypt(String encryptMethod, String password) throws Exception {
+        Class<? extends ICrypto> cryptoClass = ciphers.get(encryptMethod);
+        Constructor<? extends ICrypto> constructor = cryptoClass.getConstructor(String.class, String.class);
+        return constructor.newInstance(encryptMethod, password);
     }
 }

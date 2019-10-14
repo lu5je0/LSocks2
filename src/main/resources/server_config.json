@@ -1,6 +1,6 @@
 {
   "port": 20443,
   "password": "123456",
-  "encryptMethod": "CHACHA20_POLY1305",
+  "encryptMethod": "NONE",
   "enableNettyLogging": true
 }

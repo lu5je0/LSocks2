@@ -13,7 +13,7 @@ import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lsocks2.config.ConfigLoader;
+import lsocks2.config.AbstractConfigLoader;
 import lsocks2.config.JsonConfigLoader;
 import lsocks2.handler.local.Socks5CommandRequestHandler;
 import lsocks2.handler.local.Socks5InitialRequestHandler;
@@ -75,8 +75,7 @@ public class LocalProxyServer {
     }
 
     public static void main(String[] args) {
-        ConfigLoader configLoader = new JsonConfigLoader();
-
+        AbstractConfigLoader configLoader = new JsonConfigLoader();
         try {
             configLoader.loadLocalConfig();
         } catch (Exception e) {
