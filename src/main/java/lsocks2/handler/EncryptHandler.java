@@ -13,9 +13,11 @@ public class EncryptHandler extends MessageToByteEncoder<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf rawData, ByteBuf out) throws Exception {
-        byte[] data = new byte[rawData.readableBytes()];
-        rawData.readBytes(data);
+    protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) throws Exception {
+        System.out.println("Encrypt");
+        byte[] data = new byte[in.readableBytes()];
+        in.readBytes(data);
+        System.out.println(new String(data));
 
         out.writeBytes(crypto.encrypt(data));
     }

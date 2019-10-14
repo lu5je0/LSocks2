@@ -2,10 +2,10 @@ package lsocks2.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.channel.SimpleChannelInboundHandler;
 import lsocks2.encrypt.ICrypto;
 
-public class DecryptHandler extends MessageToByteEncoder<ByteBuf> {
+public class DecryptHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static ICrypto crypto;
 
     public DecryptHandler(ICrypto crypto) {
@@ -13,10 +13,14 @@ public class DecryptHandler extends MessageToByteEncoder<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf encryptByteBuf, ByteBuf out) throws Exception {
-        byte[] data = new byte[encryptByteBuf.readableBytes()];
-        encryptByteBuf.readBytes(data);
+    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        System.out.println("Decrypt");
+        byte[] data = new byte[msg.readableBytes()];
+        msg.readBytes(data);
 
-        out.writeBytes(crypto.decrypt(data));
+        ByteBuf encryptData = ctx.alloc().buffer();
+        encryptData.writeBytes(crypto.decrypt(data));
+
+        ctx.fireChannelRead(encryptData);
     }
 }
