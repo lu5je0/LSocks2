@@ -5,14 +5,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AesCryptoTest {
+import javax.crypto.AEADBadTagException;
+
+public class AesAeadCryptoTest {
     private ICrypto cryptoA;
     private ICrypto cryptoB;
 
     @Before
     public void setUp() throws Exception {
-        cryptoA = new AesCrypto("AES", "123456");
-        cryptoB = new AesCrypto("AES", "123456");
+        cryptoA = new AesAeadCrypto("AES", "123456");
+        cryptoB = new AesAeadCrypto("AES", "123456");
     }
 
     @Test
@@ -30,6 +32,13 @@ public class AesCryptoTest {
         String message = "test test";
         byte[] decryptData = cryptoA.decrypt(cryptoA.encrypt(message.getBytes()));
         Assert.assertArrayEquals(message.getBytes(), decryptData);
+    }
+
+    @Test(expected = AEADBadTagException.class)
+    public void tamperTest() throws Exception {
+        byte[] encryptData = cryptoA.encrypt("21312".getBytes());
+        encryptData[encryptData.length - 2] = 1;
+        cryptoA.decrypt(encryptData);
     }
 
     @Test

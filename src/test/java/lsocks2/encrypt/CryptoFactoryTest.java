@@ -8,7 +8,7 @@ public class CryptoFactoryTest {
     @Test
     public void getAesCrypt() throws Exception {
         ICrypto crypto = CryptoFactory.getCrypt("AES", "123456");
-        assertEquals(crypto.getClass(), AesCrypto.class);
+        assertEquals(crypto.getClass(), AesAeadCrypto.class);
     }
 
     @Test
