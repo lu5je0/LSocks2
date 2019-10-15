@@ -16,8 +16,6 @@ import lsocks2.protocol.LSocksInitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.NoSuchAlgorithmException;
-
 public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<DefaultSocks5CommandRequest> {
     private static final Logger logger = LoggerFactory.getLogger(Socks5CommandRequestHandler.class);
 
