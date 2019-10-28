@@ -7,8 +7,8 @@ public class CryptoFactory {
     private static final HashMap<String, Class<? extends ICrypto>> ciphers = new HashMap<>();
 
     static {
-        for (String s : AesCrypto.ciphers()) {
-            ciphers.put(s, AesCrypto.class);
+        for (String s : AesAeadCrypto.ciphers()) {
+            ciphers.put(s, AesAeadCrypto.class);
         }
         ciphers.put("NONE", NoneCrypto.class);
     }

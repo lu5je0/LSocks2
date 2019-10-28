@@ -12,10 +12,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lsocks2.config.AbstractConfigLoader;
 import lsocks2.config.ConfigHolder;
 import lsocks2.config.JsonConfigLoader;
-import lsocks2.encoder.DecryptHandler;
-import lsocks2.encoder.EncryptHandler;
-import lsocks2.encoder.LSocksInitialRequestDecoder;
-import lsocks2.encoder.LSocksMessageEncoder;
+import lsocks2.encoder.*;
 import lsocks2.encrypt.CryptoFactory;
 import lsocks2.encrypt.ICrypto;
 import lsocks2.handler.server.LSocksInitRequestHandler;
@@ -45,8 +42,8 @@ public class RemoteProxyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new EncryptHandler(crypto));
-                        pipeline.addLast(new DecryptHandler(crypto));
+                        pipeline.addLast(new AeadMessageEncryptHandler(crypto));
+                        pipeline.addLast(new AeadMessageDecryptHandler(crypto));
 
                         if (ConfigHolder.SERVER_CONFIG.getEnableNettyLogging()) {
                             pipeline.addLast(new LoggingHandler(LogLevel.INFO));

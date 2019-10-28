@@ -3,6 +3,6 @@
   "serverPort": 20443,
   "serverHost": "127.0.0.1",
   "password": "123456",
-  "encryptMethod": "NONE",
+  "encryptMethod": "AES",
   "enableNettyLogging": true
 }

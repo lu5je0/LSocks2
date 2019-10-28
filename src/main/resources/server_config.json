@@ -1,6 +1,6 @@
 {
   "port": 20443,
   "password": "123456",
-  "encryptMethod": "NONE",
+  "encryptMethod": "AES",
   "enableNettyLogging": true
 }

@@ -5,9 +5,7 @@ import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import lsocks2.config.ConfigHolder;
-import lsocks2.encoder.DecryptHandler;
-import lsocks2.encoder.EncryptHandler;
-import lsocks2.encoder.LSocksMessageEncoder;
+import lsocks2.encoder.*;
 import lsocks2.encrypt.CryptoFactory;
 import lsocks2.encrypt.ICrypto;
 import lsocks2.handler.LSocks5InitialResponseHandler;
@@ -37,8 +35,8 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new EncryptHandler(crypto));
-                        pipeline.addLast(new DecryptHandler(crypto));
+                        pipeline.addLast(new AeadMessageEncryptHandler(crypto));
+                        pipeline.addLast(new AeadMessageDecryptHandler(crypto));
 
                         pipeline.addLast(new LSocks5InitialResponseHandler(parentCtx));
                         pipeline.addLast(new Remote2ClientHandler(parentCtx.channel()));
