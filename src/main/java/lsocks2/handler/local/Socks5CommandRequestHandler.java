@@ -5,7 +5,9 @@ import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
 import lsocks2.config.ConfigHolder;
-import lsocks2.encoder.*;
+import lsocks2.encoder.AeadMessageDecryptHandler;
+import lsocks2.encoder.AeadMessageEncryptHandler;
+import lsocks2.encoder.LSocksMessageEncoder;
 import lsocks2.encrypt.CryptoFactory;
 import lsocks2.encrypt.ICrypto;
 import lsocks2.handler.LSocks5InitialResponseHandler;
@@ -45,7 +47,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                 });
         ChannelFuture connectFuture = bootstrap.connect(ConfigHolder.LOCAL_CONFIG.getServerHost(), 20443);
 
-        // 连接上LSocksServer后，发送发送LSocksInitRequest
+        // 连接上LSocksServer后，发送LSocksInitRequest
         connectFuture.addListener(future -> {
             if (future.isSuccess()) {
                 logger.info("发送LSocksInitRequest");
