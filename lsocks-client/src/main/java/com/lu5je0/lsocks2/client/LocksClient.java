@@ -75,6 +75,7 @@ public class LocksClient {
     }
 
     public static void main(String[] args) {
+        logger.info("Starting Locks2 client");
         AbstractConfigLoader configLoader = new JsonConfigLoader();
         try {
             configLoader.loadLocalConfig();

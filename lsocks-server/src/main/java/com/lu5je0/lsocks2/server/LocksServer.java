@@ -59,6 +59,7 @@ public class LocksServer {
     }
 
     public static void main(String[] args) throws Exception {
+        logger.info("Starting Locks2 server");
         LocksServer server = new LocksServer();
 
         AbstractConfigLoader abstractConfigLoader = new JsonConfigLoader();
