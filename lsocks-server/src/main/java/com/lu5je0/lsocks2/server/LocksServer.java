@@ -1,5 +1,8 @@
 package com.lu5je0.lsocks2.server;
 
+import com.lu5je0.lsocks2.config.ConfigLoader;
+import com.lu5je0.lsocks2.server.config.ServerConfig;
+import com.lu5je0.lsocks2.server.config.ServerConfigLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -9,9 +12,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import com.lu5je0.lsocks2.config.AbstractConfigLoader;
-import com.lu5je0.lsocks2.config.ConfigHolder;
-import com.lu5je0.lsocks2.config.JsonConfigLoader;
+import com.lu5je0.lsocks2.config.JsonConfigReader;
 import com.lu5je0.lsocks2.encoder.*;
 import com.lu5je0.lsocks2.encrypt.CryptoFactory;
 import com.lu5je0.lsocks2.encrypt.ICrypto;
@@ -32,8 +33,8 @@ public class LocksServer {
     }
 
     public void start() throws Exception {
-        ICrypto crypto = CryptoFactory.getCrypt(ConfigHolder.SERVER_CONFIG.getEncryptMethod(),
-                ConfigHolder.SERVER_CONFIG.getPassword());
+        ICrypto crypto = CryptoFactory.getCrypt(ServerConfig.INSTANCE.getEncryptMethod(),
+                ServerConfig.INSTANCE.getPassword());
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workerGroup)
@@ -45,7 +46,7 @@ public class LocksServer {
                         pipeline.addLast(new AeadMessageEncryptHandler(crypto));
                         pipeline.addLast(new AeadMessageDecryptHandler(crypto));
 
-                        if (ConfigHolder.SERVER_CONFIG.getEnableNettyLogging()) {
+                        if (ServerConfig.INSTANCE.getEnableNettyLogging()) {
                             pipeline.addLast(new LoggingHandler(LogLevel.INFO));
                         }
 
@@ -55,20 +56,15 @@ public class LocksServer {
                         pipeline.addLast(new LSocksInitRequestHandler(workerGroup));
                     }
                 });
-        serverBootstrap.bind(ConfigHolder.SERVER_CONFIG.getPort());
+        serverBootstrap.bind(ServerConfig.INSTANCE.getPort());
     }
 
     public static void main(String[] args) throws Exception {
         logger.info("Starting Locks2 server");
         LocksServer server = new LocksServer();
 
-        AbstractConfigLoader abstractConfigLoader = new JsonConfigLoader();
-        try {
-            abstractConfigLoader.loadServerConfig();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            System.exit(1);
-        }
+        ConfigLoader<ServerConfig> configLoader = new ServerConfigLoader(new JsonConfigReader<>());
+        configLoader.loadConfig("server_config.json", ServerConfig.class);
 
         server.start();
     }

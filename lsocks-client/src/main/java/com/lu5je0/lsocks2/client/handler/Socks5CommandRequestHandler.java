@@ -1,10 +1,10 @@
 package com.lu5je0.lsocks2.client.handler;
 
+import com.lu5je0.lsocks2.client.config.ClientConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
-import com.lu5je0.lsocks2.config.ConfigHolder;
 import com.lu5je0.lsocks2.encoder.AeadMessageDecryptHandler;
 import com.lu5je0.lsocks2.encoder.AeadMessageEncryptHandler;
 import com.lu5je0.lsocks2.encoder.LSocksMessageEncoder;
@@ -28,8 +28,8 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
     @Override
     protected void channelRead0(ChannelHandlerContext parentCtx, DefaultSocks5CommandRequest msg) throws Exception {
         logger.info("客户端准备连接至{}:{}", msg.dstAddr(), msg.dstPort());
-        ICrypto crypto = CryptoFactory.getCrypt(ConfigHolder.LOCAL_CONFIG.getEncryptMethod(),
-                ConfigHolder.LOCAL_CONFIG.getPassword());
+        ICrypto crypto = CryptoFactory.getCrypt(ClientConfig.INSTANCE.getEncryptMethod(),
+                ClientConfig.INSTANCE.getPassword());
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
@@ -45,7 +45,7 @@ public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<Def
                         pipeline.addLast(new LSocksMessageEncoder());
                     }
                 });
-        ChannelFuture connectFuture = bootstrap.connect(ConfigHolder.LOCAL_CONFIG.getServerHost(), 20443);
+        ChannelFuture connectFuture = bootstrap.connect(ClientConfig.INSTANCE.getServerHost(), 20443);
 
         // 连接上LSocksServer后，发送LSocksInitRequest
         connectFuture.addListener(future -> {

@@ -1,5 +1,6 @@
 package com.lu5je0.lsocks2.client;
 
+import com.lu5je0.lsocks2.client.config.ClientConfig;
 import com.lu5je0.lsocks2.client.handler.Socks5CommandRequestHandler;
 import com.lu5je0.lsocks2.client.handler.Socks5InitialRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -15,9 +16,6 @@ import io.netty.handler.codec.socksx.v5.Socks5InitialRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import com.lu5je0.lsocks2.config.AbstractConfigLoader;
-import com.lu5je0.lsocks2.config.JsonConfigLoader;
-import com.lu5je0.lsocks2.config.ConfigHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +43,7 @@ public class LocksClient {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-                            if (ConfigHolder.LOCAL_CONFIG.isEnableNettyLogging()) {
+                            if (ClientConfig.INSTANCE.isEnableNettyLogging()) {
                                 p.addLast(new LoggingHandler(LogLevel.DEBUG));
                             }
                             p.addLast(Socks5ServerEncoder.DEFAULT);
@@ -57,10 +55,10 @@ public class LocksClient {
                         }
                     });
 
-            ChannelFuture bindFuture = bootstrap.bind(ConfigHolder.LOCAL_CONFIG.getLocalPort()).sync();
+            ChannelFuture bindFuture = bootstrap.bind(ClientConfig.INSTANCE.getLocalPort()).sync();
             bindFuture.addListener(future -> {
                 if (future.isSuccess()) {
-                    logger.info("server bind on {}", ConfigHolder.LOCAL_CONFIG.getLocalPort());
+                    logger.info("server bind on {}", ClientConfig.INSTANCE.getLocalPort());
                 }
             });
 
@@ -76,14 +74,6 @@ public class LocksClient {
 
     public static void main(String[] args) {
         logger.info("Starting Locks2 client");
-        AbstractConfigLoader configLoader = new JsonConfigLoader();
-        try {
-            configLoader.loadLocalConfig();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            System.exit(1);
-        }
-
         LocksClient locksClient = new LocksClient();
         locksClient.start();
     }
