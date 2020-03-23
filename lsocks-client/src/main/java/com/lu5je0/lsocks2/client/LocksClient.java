@@ -1,8 +1,10 @@
 package com.lu5je0.lsocks2.client;
 
 import com.lu5je0.lsocks2.client.config.ClientConfig;
+import com.lu5je0.lsocks2.client.config.ClientConfigLoader;
 import com.lu5je0.lsocks2.client.handler.Socks5CommandRequestHandler;
 import com.lu5je0.lsocks2.client.handler.Socks5InitialRequestHandler;
+import com.lu5je0.lsocks2.config.JsonConfigReader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -72,9 +74,11 @@ public class LocksClient {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         logger.info("Starting Locks2 client");
         LocksClient locksClient = new LocksClient();
+        ClientConfigLoader clientConfigLoader = new ClientConfigLoader(new JsonConfigReader<>());
+        clientConfigLoader.loadConfig("client_config.json", ClientConfig.class);
         locksClient.start();
     }
 }
