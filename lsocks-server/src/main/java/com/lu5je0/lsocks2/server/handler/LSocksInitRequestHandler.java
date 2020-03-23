@@ -1,4 +1,4 @@
-package com.lu5je0.lsocks2.handler.server;
+package com.lu5je0.lsocks2.server.handler;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
